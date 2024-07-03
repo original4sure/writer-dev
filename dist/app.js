@@ -7,14 +7,19 @@ class KafkaProducer {
     constructor(connectionString) {
         this._producer = null;
         this._isConnected = false;
-        const { clientId, brokers, credentials } = connectionString;
-        const kafka = new kafkajs_1.Kafka({ clientId, brokers,
-            ssl: true,
-            sasl: {
-                mechanism: credentials.mechanism,
-                username: credentials.username,
-                password: credentials.password
-            } });
+        const { clientId, brokers, credentials, ssl } = connectionString;
+        const kafka = new kafkajs_1.Kafka({
+            clientId,
+            brokers,
+            ssl,
+            sasl: ssl
+                ? {
+                    mechanism: credentials.mechanism,
+                    username: credentials.username,
+                    password: credentials.password,
+                }
+                : undefined,
+        });
         this._producer = kafka.producer();
     }
     static getInstance(connectionString) {

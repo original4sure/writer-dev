@@ -19,7 +19,8 @@ interface IPAYLOAD {
 interface IConnection {
     clientId: string;
     brokers: string[];
-    credentials: {
+    ssl: boolean;
+    credentials?: {
         [key: string]: string;
     };
 }

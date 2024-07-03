@@ -23,7 +23,8 @@ interface IPAYLOAD {
 interface IConnection {
   clientId: string
   brokers: string[]
-  credentials: {
+  ssl: boolean,
+  credentials?: {
     [key: string]: string
   }
 }
@@ -34,14 +35,19 @@ export class KafkaProducer {
   private _isConnected = false;
 
   private constructor(connectionString) {
-    const { clientId, brokers, credentials } = connectionString
-    const kafka = new Kafka({ clientId, brokers,
-      ssl:true,
-      sasl: {
-        mechanism: credentials.mechanism, // scram-sha-256 or scram-sha-512
-        username: credentials.username,
-        password: credentials.password
-      } })
+    const { clientId, brokers, credentials, ssl } = connectionString;
+    const kafka = new Kafka({
+      clientId,
+      brokers,
+      ssl,
+      sasl: ssl
+        ? {
+            mechanism: credentials.mechanism, // scram-sha-256 or scram-sha-512
+            username: credentials.username,
+            password: credentials.password,
+          }
+        : undefined,
+    });
     this._producer = kafka.producer();
   }
 
