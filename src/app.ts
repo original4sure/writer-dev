@@ -20,12 +20,18 @@ interface IPAYLOAD {
   createdAt?: string
 }
 
+export enum KAFKA_MECHANISM {
+  SCRAM_SHA_256 = "scram-sha-256",
+  SCRAM_SHA_512 = "scram-sha-512",
+  PLAIN = "plain",
+}
+
 interface IConnection {
   clientId: string
   brokers: string[]
   ssl: boolean
   credentials?: {
-    mechanism: 'scram-sha-256' | 'scram-sha-512' | 'plain'
+    mechanism: KAFKA_MECHANISM
     username: string
     password: string
   }

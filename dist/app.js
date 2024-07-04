@@ -1,8 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.publish = exports.KafkaProducer = void 0;
+exports.publish = exports.KafkaProducer = exports.KAFKA_MECHANISM = void 0;
 const kafkajs_1 = require("kafkajs");
 const uuid_1 = require("uuid");
+var KAFKA_MECHANISM;
+(function (KAFKA_MECHANISM) {
+    KAFKA_MECHANISM["SCRAM_SHA_256"] = "scram-sha-256";
+    KAFKA_MECHANISM["SCRAM_SHA_512"] = "scram-sha-512";
+    KAFKA_MECHANISM["PLAIN"] = "plain";
+})(KAFKA_MECHANISM = exports.KAFKA_MECHANISM || (exports.KAFKA_MECHANISM = {}));
 class KafkaProducer {
     constructor(connectionString) {
         this._producer = null;
