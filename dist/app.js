@@ -18,7 +18,7 @@ class KafkaProducer {
             clientId,
             brokers,
             ssl,
-            sasl: credentials
+            sasl: credentials,
         });
         this._producer = kafka.producer();
     }
@@ -63,14 +63,18 @@ const publish = async (connectionString, producerInput, logger) => {
             messages: [
                 {
                     key: message.eventName,
-                    value: JSON.stringify(message.payload)
+                    value: JSON.stringify(message.payload),
                 },
             ],
         });
-        logger ? logger.info("writes: ", JSON.stringify(message)) : console.log("writes: ", JSON.stringify(message));
+        logger
+            ? logger.info("writes: ", JSON.stringify(message))
+            : console.log("writes: ", JSON.stringify(message));
     }
     catch (err) {
-        logger ? logger.error("could not write message " + err) : console.error("could not write message " + err);
+        logger
+            ? logger.error("could not write message " + err)
+            : console.error("could not write message " + err);
     }
 };
 exports.publish = publish;

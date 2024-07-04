@@ -1,23 +1,23 @@
-import { Kafka } from 'kafkajs';
-import { v4 as uuidv4 } from 'uuid';
+import { Kafka } from "kafkajs";
+import { v4 as uuidv4 } from "uuid";
 
 interface IProducerInput {
-  topic: string
-  message: IMessage
+  topic: string;
+  message: IMessage;
 }
 interface IMessage {
-  eventName: string
-  payload: IPAYLOAD
+  eventName: string;
+  payload: IPAYLOAD;
 }
 interface IPAYLOAD {
-  service: string,
+  service: string;
   data: {
-    [key: string]: any,
-    companyCode: string
-  },
-  eventName: string
-  uniqueId?: string
-  createdAt?: string
+    [key: string]: any;
+    companyCode: string;
+  };
+  eventName: string;
+  uniqueId?: string;
+  createdAt?: string;
 }
 
 export enum KAFKA_MECHANISM {
@@ -27,14 +27,14 @@ export enum KAFKA_MECHANISM {
 }
 
 interface IConnection {
-  clientId: string
-  brokers: string[]
-  ssl: boolean
+  clientId: string;
+  brokers: string[];
+  ssl: boolean;
   credentials?: {
-    mechanism: KAFKA_MECHANISM
-    username: string
-    password: string
-  }
+    mechanism: KAFKA_MECHANISM;
+    username: string;
+    password: string;
+  };
 }
 
 export class KafkaProducer {
@@ -48,7 +48,7 @@ export class KafkaProducer {
       clientId,
       brokers,
       ssl,
-      sasl: credentials
+      sasl: credentials,
     });
     this._producer = kafka.producer();
   }
@@ -87,26 +87,34 @@ export class KafkaProducer {
     return this._producer;
   }
 }
-export const publish = async(connectionString: IConnection, producerInput: IProducerInput, logger?) => {
+export const publish = async (
+  connectionString: IConnection,
+  producerInput: IProducerInput,
+  logger?
+) => {
   let kafka = KafkaProducer.getInstance(connectionString);
   if (!kafka.isConnected) {
     await kafka.connect();
   }
-  const { topic, message } = producerInput
-  message.payload.uniqueId = uuidv4()
-  message.payload.createdAt = new Date().toISOString()
-  try{
+  const { topic, message } = producerInput;
+  message.payload.uniqueId = uuidv4();
+  message.payload.createdAt = new Date().toISOString();
+  try {
     await kafka.producer.send({
       topic,
       messages: [
         {
           key: message.eventName,
-          value: JSON.stringify(message.payload)
+          value: JSON.stringify(message.payload),
         },
       ],
     });
-    logger ? logger.info("writes: ", JSON.stringify(message)) : console.log("writes: ", JSON.stringify(message))
-  }catch(err){
-    logger ? logger.error("could not write message " + err) : console.error("could not write message " + err)
+    logger
+      ? logger.info("writes: ", JSON.stringify(message))
+      : console.log("writes: ", JSON.stringify(message));
+  } catch (err) {
+    logger
+      ? logger.error("could not write message " + err)
+      : console.error("could not write message " + err);
   }
-}
+};
