@@ -26,15 +26,17 @@ export enum KAFKA_MECHANISM {
   PLAIN = "plain",
 }
 
+export interface ICredentials {
+  mechanism: KAFKA_MECHANISM;
+  username: string;
+  password: string;
+}
+
 interface IConnection {
   clientId: string;
   brokers: string[];
   ssl: boolean;
-  credentials?: {
-    mechanism: KAFKA_MECHANISM;
-    username: string;
-    password: string;
-  };
+  credentials?: ICredentials;
 }
 
 export class KafkaProducer {
