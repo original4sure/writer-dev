@@ -12,13 +12,7 @@ class KafkaProducer {
             clientId,
             brokers,
             ssl,
-            sasl: ssl
-                ? {
-                    mechanism: credentials.mechanism,
-                    username: credentials.username,
-                    password: credentials.password,
-                }
-                : undefined,
+            sasl: credentials
         });
         this._producer = kafka.producer();
     }
@@ -35,9 +29,9 @@ class KafkaProducer {
         try {
             await this._producer.connect();
             const producer = this._producer;
-            await this._producer.on('producer.connect', () => console.info('producer kafka connected'));
-            await this._producer.on('producer.disconnect', () => console.error('producer kafka disconnect'));
-            await this._producer.on('producer.network.request_timeout', () => console.error('producer kafka network timeout'));
+            await this._producer.on("producer.connect", () => console.info("producer kafka connected"));
+            await this._producer.on("producer.disconnect", () => console.error("producer kafka disconnect"));
+            await this._producer.on("producer.network.request_timeout", () => console.error("producer kafka network timeout"));
             this._isConnected = true;
         }
         catch (err) {

@@ -23,9 +23,11 @@ interface IPAYLOAD {
 interface IConnection {
   clientId: string
   brokers: string[]
-  ssl: boolean,
+  ssl: boolean
   credentials?: {
-    [key: string]: string
+    mechanism: 'scram-sha-256' | 'scram-sha-512' | 'plain'
+    username: string
+    password: string
   }
 }
 
@@ -40,13 +42,7 @@ export class KafkaProducer {
       clientId,
       brokers,
       ssl,
-      sasl: ssl
-        ? {
-            mechanism: credentials.mechanism, // scram-sha-256 or scram-sha-512
-            username: credentials.username,
-            password: credentials.password,
-          }
-        : undefined,
+      sasl: credentials
     });
     this._producer = kafka.producer();
   }
@@ -65,13 +61,19 @@ export class KafkaProducer {
   async connect(): Promise<void> {
     try {
       await this._producer.connect();
-      const producer = this._producer
-      await this._producer.on('producer.connect', () => console.info('producer kafka connected'))
-      await this._producer.on('producer.disconnect', () => console.error('producer kafka disconnect'))
-      await this._producer.on('producer.network.request_timeout', () => console.error('producer kafka network timeout'))
+      const producer = this._producer;
+      await this._producer.on("producer.connect", () =>
+        console.info("producer kafka connected")
+      );
+      await this._producer.on("producer.disconnect", () =>
+        console.error("producer kafka disconnect")
+      );
+      await this._producer.on("producer.network.request_timeout", () =>
+        console.error("producer kafka network timeout")
+      );
       this._isConnected = true;
     } catch (err) {
-        console.error(err);
+      console.error(err);
     }
   }
 

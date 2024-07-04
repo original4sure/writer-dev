@@ -21,7 +21,9 @@ interface IConnection {
     brokers: string[];
     ssl: boolean;
     credentials?: {
-        [key: string]: string;
+        mechanism: 'scram-sha-256' | 'scram-sha-512' | 'plain';
+        username: string;
+        password: string;
     };
 }
 export declare class KafkaProducer {
