@@ -16,12 +16,16 @@ interface IPAYLOAD {
     uniqueId?: string;
     createdAt?: string;
 }
+interface ICredentials {
+    mechanism: "scram-sha-256" | "scram-sha-512" | "plain";
+    username: string;
+    password: string;
+}
 interface IConnection {
     clientId: string;
     brokers: string[];
-    credentials: {
-        [key: string]: string;
-    };
+    ssl?: boolean;
+    credentials?: ICredentials;
 }
 export declare class KafkaProducer {
     private static instance;

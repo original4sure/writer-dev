@@ -7,14 +7,13 @@ class KafkaProducer {
     constructor(connectionString) {
         this._producer = null;
         this._isConnected = false;
-        const { clientId, brokers, credentials } = connectionString;
-        const kafka = new kafkajs_1.Kafka({ clientId, brokers,
-            ssl: true,
-            sasl: {
-                mechanism: credentials.mechanism,
-                username: credentials.username,
-                password: credentials.password
-            } });
+        const { clientId, brokers, credentials, ssl } = connectionString;
+        const kafka = new kafkajs_1.Kafka({
+            clientId,
+            brokers,
+            ssl: ssl || true,
+            sasl: credentials,
+        });
         this._producer = kafka.producer();
     }
     static getInstance(connectionString) {
@@ -30,9 +29,9 @@ class KafkaProducer {
         try {
             await this._producer.connect();
             const producer = this._producer;
-            await this._producer.on('producer.connect', () => console.info('producer kafka connected'));
-            await this._producer.on('producer.disconnect', () => console.error('producer kafka disconnect'));
-            await this._producer.on('producer.network.request_timeout', () => console.error('producer kafka network timeout'));
+            await this._producer.on("producer.connect", () => console.info("producer kafka connected"));
+            await this._producer.on("producer.disconnect", () => console.error("producer kafka disconnect"));
+            await this._producer.on("producer.network.request_timeout", () => console.error("producer kafka network timeout"));
             this._isConnected = true;
         }
         catch (err) {
@@ -58,14 +57,18 @@ const publish = async (connectionString, producerInput, logger) => {
             messages: [
                 {
                     key: message.eventName,
-                    value: JSON.stringify(message.payload)
+                    value: JSON.stringify(message.payload),
                 },
             ],
         });
-        logger ? logger.info("writes: ", JSON.stringify(message)) : console.log("writes: ", JSON.stringify(message));
+        logger
+            ? logger.info("writes: ", JSON.stringify(message))
+            : console.log("writes: ", JSON.stringify(message));
     }
     catch (err) {
-        logger ? logger.error("could not write message " + err) : console.error("could not write message " + err);
+        logger
+            ? logger.error("could not write message " + err)
+            : console.error("could not write message " + err);
     }
 };
 exports.publish = publish;
