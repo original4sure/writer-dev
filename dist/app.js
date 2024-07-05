@@ -17,7 +17,7 @@ class KafkaProducer {
         const kafka = new kafkajs_1.Kafka({
             clientId,
             brokers,
-            ssl,
+            ssl: ssl || false,
             sasl: credentials,
         });
         this._producer = kafka.producer();

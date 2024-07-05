@@ -35,7 +35,7 @@ interface ICredentials {
 interface IConnection {
   clientId: string;
   brokers: string[];
-  ssl: boolean;
+  ssl?: boolean;
   credentials?: ICredentials;
 }
 
@@ -49,7 +49,7 @@ export class KafkaProducer {
     const kafka = new Kafka({
       clientId,
       brokers,
-      ssl,
+      ssl: ssl || false,
       sasl: credentials,
     });
     this._producer = kafka.producer();

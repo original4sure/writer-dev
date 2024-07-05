@@ -29,7 +29,7 @@ interface ICredentials {
 interface IConnection {
     clientId: string;
     brokers: string[];
-    ssl: boolean;
+    ssl?: boolean;
     credentials?: ICredentials;
 }
 export declare class KafkaProducer {
