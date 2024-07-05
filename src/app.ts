@@ -49,7 +49,7 @@ export class KafkaProducer {
     const kafka = new Kafka({
       clientId,
       brokers,
-      ssl: ssl || false,
+      ssl: ssl || true,
       sasl: credentials,
     });
     this._producer = kafka.producer();
