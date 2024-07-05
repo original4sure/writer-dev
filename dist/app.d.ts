@@ -21,7 +21,7 @@ export declare enum KAFKA_MECHANISM {
     SCRAM_SHA_512 = "scram-sha-512",
     PLAIN = "plain"
 }
-export interface ICredentials {
+interface ICredentials {
     mechanism: KAFKA_MECHANISM;
     username: string;
     password: string;

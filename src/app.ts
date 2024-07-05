@@ -26,7 +26,7 @@ export enum KAFKA_MECHANISM {
   PLAIN = "plain",
 }
 
-export interface ICredentials {
+interface ICredentials {
   mechanism: KAFKA_MECHANISM;
   username: string;
   password: string;
