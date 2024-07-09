@@ -19,13 +19,6 @@ const saslEnvKeys = [
 let config: Record<string, any> = {};
 
 export const setEnvironment = () => {
-  /** load environment variables */
-  const loggerRootDir = dirname(dirname(__dirname));
-  const applicationRootDir = dirname(dirname(dirname(loggerRootDir)));
-
-  const envFilePath = path.resolve(applicationRootDir, "environment", ".env");
-  dotenv.config({ path: envFilePath });
-
   config = process.env;
 };
 

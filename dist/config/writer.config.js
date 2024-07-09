@@ -1,31 +1,6 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getEnvValue = exports.getKafkaConfig = exports.isLikeKafkaConfig = exports.setEnvironment = void 0;
-const path_1 = __importStar(require("path"));
-const dotenv = __importStar(require("dotenv"));
 const lodash_1 = require("lodash");
 const requiredKafkaEnvKeys = [
     "KAFKA_BROKERS",
@@ -40,11 +15,6 @@ const saslEnvKeys = [
 ];
 let config = {};
 const setEnvironment = () => {
-    /** load environment variables */
-    const loggerRootDir = (0, path_1.dirname)((0, path_1.dirname)(__dirname));
-    const applicationRootDir = (0, path_1.dirname)((0, path_1.dirname)((0, path_1.dirname)(loggerRootDir)));
-    const envFilePath = path_1.default.resolve(applicationRootDir, "environment", ".env");
-    dotenv.config({ path: envFilePath });
     config = process.env;
 };
 exports.setEnvironment = setEnvironment;
