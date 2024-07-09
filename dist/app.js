@@ -1,24 +1,48 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.publish = exports.KafkaProducer = void 0;
+exports.KafkaProducer = void 0;
 const kafkajs_1 = require("kafkajs");
 const uuid_1 = require("uuid");
+const writer_config_1 = require("./config/writer.config");
 class KafkaProducer {
-    constructor(connectionString) {
+    constructor() {
         this._producer = null;
         this._isConnected = false;
-        const { clientId, brokers, credentials, ssl } = connectionString;
-        const kafka = new kafkajs_1.Kafka({
-            clientId,
-            brokers,
-            ssl: ssl || true,
-            sasl: credentials,
-        });
+        this.publish = async (producerInput, logger) => {
+            let kafka = KafkaProducer.getInstance();
+            if (!kafka.isConnected) {
+                await kafka.connect();
+            }
+            const { topic, message } = producerInput;
+            message.payload.uniqueId = (0, uuid_1.v4)();
+            message.payload.createdAt = new Date().toISOString();
+            try {
+                await kafka.producer.send({
+                    topic: topic || (0, writer_config_1.getEnvValue)('KAFKA_TOPIC'),
+                    messages: [
+                        {
+                            key: message.eventName,
+                            value: JSON.stringify(message.payload),
+                        },
+                    ],
+                });
+                logger
+                    ? logger.info("writes: ", JSON.stringify(message))
+                    : console.log("writes: ", JSON.stringify(message));
+            }
+            catch (err) {
+                logger
+                    ? logger.error("could not write message " + err)
+                    : console.error("could not write message " + err);
+            }
+        };
+        const kafkaConfig = (0, writer_config_1.getKafkaConfig)();
+        const kafka = new kafkajs_1.Kafka(kafkaConfig);
         this._producer = kafka.producer();
     }
-    static getInstance(connectionString) {
+    static getInstance() {
         if (!KafkaProducer.instance) {
-            KafkaProducer.instance = new KafkaProducer(connectionString);
+            KafkaProducer.instance = new KafkaProducer();
         }
         return KafkaProducer.instance;
     }
@@ -27,11 +51,11 @@ class KafkaProducer {
     }
     async connect() {
         try {
-            await this._producer.connect();
             const producer = this._producer;
-            await this._producer.on("producer.connect", () => console.info("producer kafka connected"));
-            await this._producer.on("producer.disconnect", () => console.error("producer kafka disconnect"));
-            await this._producer.on("producer.network.request_timeout", () => console.error("producer kafka network timeout"));
+            await producer.connect();
+            await producer.on("producer.connect", () => console.info("producer kafka connected"));
+            await producer.on("producer.disconnect", () => console.error("producer kafka disconnect"));
+            await producer.on("producer.network.request_timeout", () => console.error("producer kafka network timeout"));
             this._isConnected = true;
         }
         catch (err) {
@@ -43,33 +67,4 @@ class KafkaProducer {
     }
 }
 exports.KafkaProducer = KafkaProducer;
-const publish = async (connectionString, producerInput, logger) => {
-    let kafka = KafkaProducer.getInstance(connectionString);
-    if (!kafka.isConnected) {
-        await kafka.connect();
-    }
-    const { topic, message } = producerInput;
-    message.payload.uniqueId = (0, uuid_1.v4)();
-    message.payload.createdAt = new Date().toISOString();
-    try {
-        await kafka.producer.send({
-            topic,
-            messages: [
-                {
-                    key: message.eventName,
-                    value: JSON.stringify(message.payload),
-                },
-            ],
-        });
-        logger
-            ? logger.info("writes: ", JSON.stringify(message))
-            : console.log("writes: ", JSON.stringify(message));
-    }
-    catch (err) {
-        logger
-            ? logger.error("could not write message " + err)
-            : console.error("could not write message " + err);
-    }
-};
-exports.publish = publish;
 //# sourceMappingURL=app.js.map

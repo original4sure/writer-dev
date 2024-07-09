@@ -4,7 +4,6 @@
   "description": "",
   "main": "dist/app.js",
   "types": "dist/app.d.ts",
-
   "scripts": {
     "start": "tsc && node dist/app.js",
     "build": "tsc",
@@ -17,7 +16,9 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "kafkajs": "^2.2.2",
+    "lodash": "^4.17.21",
     "uuid": "^9.0.0"
   }
 }
