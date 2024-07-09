@@ -44,9 +44,7 @@ const setEnvironment = () => {
     const loggerRootDir = (0, path_1.dirname)((0, path_1.dirname)(__dirname));
     const applicationRootDir = (0, path_1.dirname)((0, path_1.dirname)((0, path_1.dirname)(loggerRootDir)));
     const envFilePath = path_1.default.resolve(applicationRootDir, "environment", ".env");
-    console.log({ path: envFilePath });
     dotenv.config({ path: envFilePath });
-    console.log({ process: process.env });
     config = process.env;
 };
 exports.setEnvironment = setEnvironment;
@@ -59,8 +57,7 @@ const isLikeKafkaConfig = () => {
     if (missingSaslConfig.length < 3 && missingSaslConfig.length > 0) {
         throw new Error(`Missing Kafka Sasl configurations: ${missingSaslConfig.join(", ")}`);
     }
-    if (saslEnvKeys)
-        return true;
+    return true;
 };
 exports.isLikeKafkaConfig = isLikeKafkaConfig;
 const getSaslConfig = () => {
@@ -75,11 +72,9 @@ const getSaslConfig = () => {
     };
 };
 const getKafkaConfig = () => {
-    console.log({ kfconfig: config });
     if ((0, lodash_1.isEmpty)(config)) {
         (0, exports.setEnvironment)();
     }
-    console.log({ kfconfig: config });
     if ((0, exports.isLikeKafkaConfig)()) {
         const { KAFKA_BROKERS, KAFKA_CLIENT, KAFKA_ENABLE_SSL, } = config;
         return {
