@@ -1,41 +1,12 @@
-interface IProducerInput {
-    topic: string;
-    message: IMessage;
-}
-interface IMessage {
-    eventName: string;
-    payload: IPAYLOAD;
-}
-interface IPAYLOAD {
-    service: string;
-    data: {
-        [key: string]: any;
-        companyCode: string;
-    };
-    eventName: string;
-    uniqueId?: string;
-    createdAt?: string;
-}
-interface ICredentials {
-    mechanism: "scram-sha-256" | "scram-sha-512" | "plain";
-    username: string;
-    password: string;
-}
-interface IConnection {
-    clientId: string;
-    brokers: string[];
-    ssl?: boolean;
-    credentials?: ICredentials;
-}
+import { IProducerInput } from "./interface/writer.interface";
 export declare class KafkaProducer {
     private static instance;
     private _producer;
     private _isConnected;
     private constructor();
-    static getInstance(connectionString: any): KafkaProducer;
+    static getInstance(): KafkaProducer;
     get isConnected(): boolean;
     connect(): Promise<void>;
     get producer(): any;
+    publish: (producerInput: IProducerInput, logger?: any) => Promise<void>;
 }
-export declare const publish: (connectionString: IConnection, producerInput: IProducerInput, logger?: any) => Promise<void>;
-export {};
