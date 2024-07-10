@@ -1,6 +1,4 @@
-import path, { dirname } from "path";
-import * as dotenv from "dotenv";
-import { difference, get, isEmpty, isNil } from "lodash";
+import { difference, isEmpty, isNil } from "lodash";
 import { IKafkaConfig } from "../interface/writer.interface";
 
 const requiredKafkaEnvKeys = [
